@@ -1,54 +1,157 @@
-# Space Station Object Detection - BuildwithDelhi 2.0 Hackathon
+# 🚀 Space Station Object Detection
 
-## 🎯 Project Overview
-Robust object detection model for space station objects (FireExtinguisher, ToolBox, OxygenTank) using YOLOv8 and synthetic data from Duality AI's Falcon platform.
+This repository contains the complete pipeline for training, evaluating, and running inference on a YOLOv8 model to detect critical space station equipment (🔧 Toolbox, 🛢️ OxygenTank, 🔥 FireExtinguisher) using synthetic data from Duality AI’s Falcon platform.
 
-## 🏆 Results
-- **mAP@0.5**: 91.5%
-- **mAP@0.5-0.95**: 83.8%
-- **Precision**: 96.9%
-- **Recall**: 85.4%
-- **Speed**: 4.3ms per image (~233 FPS)
+---
 
-## 📊 Per-Class Performance
-| Class | mAP@0.5 | mAP@0.5-0.95 |
-|-------|---------|--------------|
-| FireExtinguisher | 94.8% | 88.1% |
-| ToolBox | 91.1% | 85.8% |
-| OxygenTank | 88.7% | 77.4% |
+## 📖 Table of Contents
+1. [⚙️ Environment Setup](#environment-setup)  
+2. [📂 Repository Structure](#repository-structure)  
+3. [📊 Data Preparation](#data-preparation)  
+4. [🏋️ Training the Model](#training-the-model)  
+5. [📈 Evaluating the Model](#evaluating-the-model)  
+6. [🔍 Running Inference](#running-inference)  
+7. [🔄 Reproducing Final Results](#reproducing-final-results)  
+8. [📤 Expected Outputs](#expected-outputs)  
+9. [🧠 Interpreting Results](#interpreting-results)  
 
-## 🚀 Quick Start
+---
+
+## ⚙️ Environment Setup
+
+1. **Clone the repository**  
+git clone https://github.com/yourusername/space-station-object-detection.git
+cd space-station-object-detection
+
+2. **Create a virtual environment** (🔧 optional but recommended)  
+python3 -m venv venv
+source venv/bin/activate # Linux/Mac
+venv\Scripts\activate # Windows
+
+3. **Install dependencies**
 pip install -r requirements.txt
-python scripts/train.py --epochs 25
-python scripts/predict.py --weights weights/best.pt --source <test_images>
 
-## 📁 Repository Structure
-- `scripts/`: Training and inference code
-- `weights/`: Trained model weights
-- `configs/`: Configuration files
-- `results/`: Training metrics and visualizations
-- `docs/`: Detailed documentation
+> 💡 **Note:** Requires Python ≥3.8 and PyTorch with CUDA support for GPU acceleration.
 
-## 🛠️ Model Architecture
-- **Base Model**: YOLOv8n
-- **Optimizer**: SGD with momentum 0.9
-- **Learning Rate**: 0.0005
-- **Augmentation**: Mosaic (0.5), blur, median blur
-- **Epochs**: 25
+---
 
-## 📈 Training Process
-1. Initial baseline: 73.7% mAP@0.5
-2. Hyperparameter optimization
-3. Advanced augmentation techniques
-4. Final result: 91.5% mAP@0.5
+## 📂 Repository Structure
+├── configs/
+│ └── 📝 yolo_params.yaml # Dataset paths & class names
+├── scripts/
+│ ├── 🏋️ train.py # YOLOv8 training script
+│ ├── 🔍 predict.py # YOLOv8 inference script
+│ └── 🎨 visualize.py # Visualization utilities
+├── weights/
+│ ├── 🎯 best.pt # Best model weights
+│ └── 🏁 last.pt # Final epoch weights
+├── results/
+│ ├── 📊 training_results.png # Loss & metric curves
+│ ├── 🎯 confusion_matrix.png # Confusion matrix
+│ ├── 📑 results.csv # Epoch metrics CSV
+│ └── 🖼️ validation_predictions/
+│ ├── val_batch0_pred.jpg
+│ └── … # Sample outputs
+├── 📄 README.md # This file
+└── 📦 requirements.txt # Python dependencies
 
-## 🎪 Demo
-See `results/validation_predictions/` for sample detection outputs.
+---
 
-## 👥 Team
-[Cosmic Crushers]
-- [Abhishek Mittal]
-- [Shubham Yadav]
-- [Krish Mangla]
-- [Tavishi.]
-- [Lakshay]
+## 📊 Data Preparation
+
+1. **Dataset Structure**  
+   Place `HackByte_Dataset` in `data/`:
+   
+data/
+├── train/
+│ ├── images/
+│ └── labels/
+├── val/
+│ ├── images/
+│ └── labels/
+└── test/
+├── images/
+└── labels/
+
+2. **Configuration**  
+Edit `configs/yolo_params.yaml`:
+train: data/train
+val: data/val
+test: data/test
+nc: 3
+names: ['FireExtinguisher', 'ToolBox', 'OxygenTank']
+
+---
+
+## 🏋️ Training the Model
+
+Run training with YOLOv8:
+python scripts/train.py
+--data configs/yolo_params.yaml
+--epochs 25
+--optimizer SGD
+--lr0 0.0005
+--mosaic 0.5
+--imgsz 640
+
+✅ Weights & logs → `runs/detect/train/`  
+🎯 `best.pt` → highest validation mAP@0.5
+
+---
+
+## 📈 Evaluating the Model
+
+Validate on test set:
+from ultralytics import YOLO
+model = YOLO('weights/best.pt')
+results = model.val(data='configs/yolo_params.yaml', split='test')
+print(results.box.map)
+🔧 Or via CLI:
+!yolo val model=weights/best.pt data=configs/yolo_params.yaml
+
+---
+
+## 🔍 Running Inference
+
+Detect on custom images:
+python scripts/predict.py
+--weights weights/best.pt
+--source data/test/images
+--conf 0.25
+--save
+🔖 Outputs → `runs/detect/predict/`
+
+---
+
+## 🔄 Reproducing Final Results
+
+1. Ensure paths in `configs/yolo_params.yaml` match your setup.  
+2. Use same hyperparameters & code.  
+3. Evaluate with `best.pt` to match reported scores:  
+   - **mAP@0.5: 0.915**  
+   - **mAP@0.5-0.95: 0.838**
+
+---
+
+## 📤 Expected Outputs
+
+- **📊 `training_results.png`** → Loss & metrics plots  
+- **🎯 `confusion_matrix.png`** → Class confusion  
+- **📑 `results.csv`** → Epoch-wise metrics  
+- **🖼️ `validation_predictions/`** → Sample annotated images
+
+---
+
+## 🧠 Interpreting Results
+
+- **mAP@0.5:** Precision @ IoU≥0.5 (target ≥85%)  
+- **mAP@0.5-0.95:** Precisions @ varied IoU (target ≥75%)  
+- **Precision:** Correct detections / total predicted (target ≥90%)  
+- **Recall:** Correct detections / total actual (target ≥80%)  
+- **Inference Speed:** Time per image (pre + inf + post)  
+
+> 🚀 High metrics confirm robust, real-time detection capabilities!
+
+---
+
+**© 2025 Team Cosmic Crushers**  
