@@ -36,24 +36,26 @@ pip install -r requirements.txt
 ---
 
 ## 📂 Repository Structure
+```text
 ├── configs/
-│ └── 📝 yolo_params.yaml # Dataset paths & class names
+│ └──📝 yolo_params.yaml
 ├── scripts/
-│ ├── 🏋️ train.py # YOLOv8 training script
-│ ├── 🔍 predict.py # YOLOv8 inference script
-│ └── 🎨 visualize.py # Visualization utilities
+│ ├──🏋️ train.py
+│ ├──🔍 predict.py
+│ └──🎨 visualize.py
 ├── weights/
-│ ├── 🎯 best.pt # Best model weights
-│ └── 🏁 last.pt # Final epoch weights
+│ ├──🎯 best.pt
+│ └──🏁 last.pt
 ├── results/
-│ ├── 📊 training_results.png # Loss & metric curves
-│ ├── 🎯 confusion_matrix.png # Confusion matrix
-│ ├── 📑 results.csv # Epoch metrics CSV
-│ └── 🖼️ validation_predictions/
+│ ├──📊 training_results.png
+│ ├──🎯 confusion_matrix.png
+│ ├──📑 results.csv
+│ └──🖼️ validation_predictions/
 │ ├── val_batch0_pred.jpg
-│ └── … # Sample outputs
-├── 📄 README.md # This file
-└── 📦 requirements.txt # Python dependencies
+│ └── …
+├──📄 README.md
+└──📦 requirements.txt
+```
 
 ---
 
@@ -61,7 +63,7 @@ pip install -r requirements.txt
 
 1. **Dataset Structure**  
    Place `HackByte_Dataset` in `data/`:
-   
+```text  
 data/
 ├── train/
 │ ├── images/
@@ -72,6 +74,7 @@ data/
 └── test/
 ├── images/
 └── labels/
+```
 
 2. **Configuration**  
 Edit `configs/yolo_params.yaml`:
